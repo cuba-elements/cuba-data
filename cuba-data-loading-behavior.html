@@ -66,10 +66,10 @@
               this._setData(data);
               resolve(data);
             }.bind(this),
-            function() {
+            function(error) {
               this._setLoading(false);
               this.fire("cuba-data-loading-error");
-              reject('Failed to load data');
+              reject({message: 'Failed to load data', errorData: error || null});
             }.bind(this)
           );
         }, this.debounceDuration);

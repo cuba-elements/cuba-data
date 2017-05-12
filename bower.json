@@ -1,6 +1,6 @@
 {
   "name": "cuba-data",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "main": "cuba-data.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.7.0",
