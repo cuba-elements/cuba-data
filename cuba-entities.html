@@ -125,6 +125,9 @@ The `cuba-entities` element provides an ability to load list of entities.
       },
 
       loadCount: function() {
+        if (!this.app) {
+          return;
+        }
         var loadCountPromise = this.app.queryCount(this.entityName, 'all', null);
         loadCountPromise.then(function (count) {
           this._setCount(parseInt(count));
@@ -133,6 +136,9 @@ The `cuba-entities` element provides an ability to load list of entities.
       },
 
       _load: function () {
+        if (!this.app) {
+          return;
+        }
         this._loadMoreOffset = null;
         return this.app.loadEntities(this.entityName, this._getOptions());
       },
