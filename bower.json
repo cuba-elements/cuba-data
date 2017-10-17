@@ -3,7 +3,7 @@
   "main": "cuba-data.html",
   "dependencies": {
     "polymer": "Polymer/polymer#1.9 - 2",
-    "cuba-app": "cuba-elements/cuba-app#polymer2"
+    "cuba-app": "cuba-elements/cuba-app#^0.3.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#1 - 2",
