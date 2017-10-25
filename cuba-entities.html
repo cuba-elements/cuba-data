@@ -83,7 +83,7 @@ The `cuba-entities` element provides an ability to load list of entities.
             return;
           }
           if (this.provideCount) {
-            this.loadCount();
+            this.loadCount(true);
           }
           for (var i = 0; i < this.data.length; i++) {
             if (this.data[i].id === entity.id) {
@@ -124,23 +124,24 @@ The `cuba-entities` element provides an ability to load list of entities.
         );
       },
 
-      loadCount: function() {
+      loadCount: function(abortable) {
         if (!this.app) {
           return;
         }
-        var loadCountPromise = this.app.queryCount(this.entityName, 'all', null);
+        var fetchOptions = this._handleAbortable(abortable, 'countController');
+        var loadCountPromise = this.app.queryCount(this.entityName, 'all', null, fetchOptions);
         loadCountPromise.then(function (count) {
           this._setCount(parseInt(count));
         }.bind(this));
         return loadCountPromise;
       },
 
-      _load: function () {
+      _load: function (fetchOptions) {
         if (!this.app) {
           return;
         }
         this._loadMoreOffset = null;
-        return this.app.loadEntities(this.entityName, this._getOptions());
+        return this.app.loadEntities(this.entityName, this._getOptions(), fetchOptions);
       },
 
       _getOptions: function () {
@@ -154,7 +155,7 @@ The `cuba-entities` element provides an ability to load list of entities.
 
       _countOptionsChanged: function() {
         if (this.auto && this.provideCount) {
-          this.loadCount();
+          this.loadCount(true);
         }
       }
     });
