@@ -83,17 +83,16 @@
       }
     },
 
-    _handleAbortable: function (abortable, controllerProp) {
+    _handleAbortable: function (abortable) {
       var options = {};
-      controllerProp = controllerProp || 'controller';
       if ('AbortController' in window) {
-        if (this[controllerProp]) {
-          this[controllerProp].abort();
+        if (this.controller) {
+          this.controller.abort();
         }
 
         if (abortable) {
-          this[controllerProp] = new AbortController();
-          options.signal = this[controllerProp].signal;
+          this.controller = new AbortController();
+          options.signal = this.controller.signal;
         }
       }
       return options;
