@@ -109,6 +109,9 @@ See https://doc.cuba-platform.com/manual-latest/rest_api_v2_queries_config.html
 
 
       _load: function(fetchOptions) {
+        if (this.app == null || this.entityName == null || this.queryName == null){
+          return;
+        }
         this._loadMoreOffset = null;
         if (this.provideCount) {
             return this.app.queryWithCount(this.entityName, this.queryName, this.params, fetchOptions)

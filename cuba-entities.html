@@ -135,7 +135,7 @@ The `cuba-entities` element provides an ability to load list of entities.
       },
 
       _load: function (fetchOptions) {
-        if (!this.app) {
+        if (this.app == null || this.entityName == null) {
           return;
         }
         this._loadMoreOffset = null;
