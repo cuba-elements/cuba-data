@@ -35,9 +35,10 @@ The service should be [exposed](https://doc.cuba-platform.com/manual-latest/rest
 
       observers: ['_optionsChanged(app, serviceName, method, handleAs, params.*, auto)'],
 
-      _load: function() {
+      _load: function(fetchOptions) {
         return this.app.invokeService(this.serviceName, this.method, this.params, {
-          handleAs: this.handleAs
+          handleAs: this.handleAs,
+          signal: fetchOptions ? fetchOptions.signal : null
         });
       }
     });

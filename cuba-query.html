@@ -49,8 +49,7 @@ See https://doc.cuba-platform.com/manual-latest/rest_api_v2_queries_config.html
       },
 
       observers: [
-        '_optionsChanged(app, entityName, queryName, params.*, auto)',
-        '_countOptionsChanged(app, entityName, queryName, params.*, auto, provideCount)'
+        '_optionsChanged(app, entityName, queryName, params.*, auto)'
       ],
 
       remove: function(entity) {
@@ -59,7 +58,7 @@ See https://doc.cuba-platform.com/manual-latest/rest_api_v2_queries_config.html
             return;
           }
           if (this.provideCount) {
-            this.loadCount();
+            this._setCount(this.count - 1);
           }
           for (var i = 0; i < this.data.length; i++) {
             if (this.data[i].id === entity.id) {
@@ -100,7 +99,7 @@ See https://doc.cuba-platform.com/manual-latest/rest_api_v2_queries_config.html
         );
       },
 
-      loadCount: function() {
+      loadCount: function(abortable) {
         var loadCountPromise = this.app.queryCount(this.entityName, this.queryName, this.params);
         loadCountPromise.then(function (count) {
           this._setCount(parseInt(count));
@@ -109,14 +108,16 @@ See https://doc.cuba-platform.com/manual-latest/rest_api_v2_queries_config.html
       },
 
 
-      _load: function() {
+      _load: function(fetchOptions) {
         this._loadMoreOffset = null;
-        return this.app.query(this.entityName, this.queryName, this.params);
-      },
-
-      _countOptionsChanged: function() {
-        if (this.auto && this.provideCount) {
-          this.loadCount();
+        if (this.provideCount) {
+            return this.app.queryWithCount(this.entityName, this.queryName, this.params, fetchOptions)
+                .then(function (entitiesWithCount) {
+                    this._setCount(parseInt(entitiesWithCount.count));
+                    return entitiesWithCount.result;
+                }.bind(this));
+        } else {
+            return this.app.query(this.entityName, this.queryName, this.params, fetchOptions);
         }
       }
 

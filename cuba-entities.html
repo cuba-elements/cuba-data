@@ -68,8 +68,7 @@ The `cuba-entities` element provides an ability to load list of entities.
       },
 
       observers: [
-        '_optionsChanged(app, entityName, view, sort, limit, offset, auto)',
-        '_countOptionsChanged(app, entityName, auto, provideCount)'
+        '_optionsChanged(app, entityName, view, sort, limit, offset, auto)'
       ],
 
       /**
@@ -83,7 +82,7 @@ The `cuba-entities` element provides an ability to load list of entities.
             return;
           }
           if (this.provideCount) {
-            this.loadCount();
+            this._setCount(this.count - 1);
           }
           for (var i = 0; i < this.data.length; i++) {
             if (this.data[i].id === entity.id) {
@@ -124,7 +123,7 @@ The `cuba-entities` element provides an ability to load list of entities.
         );
       },
 
-      loadCount: function() {
+      loadCount: function(abortable) {
         if (!this.app) {
           return;
         }
@@ -135,12 +134,20 @@ The `cuba-entities` element provides an ability to load list of entities.
         return loadCountPromise;
       },
 
-      _load: function () {
+      _load: function (fetchOptions) {
         if (!this.app) {
           return;
         }
         this._loadMoreOffset = null;
-        return this.app.loadEntities(this.entityName, this._getOptions());
+        if (this.provideCount) {
+          return this.app.loadEntitiesWithCount(this.entityName, this._getOptions(), fetchOptions)
+            .then(function (entitiesWithCount) {
+              this._setCount(parseInt(entitiesWithCount.count));
+              return entitiesWithCount.result;
+            }.bind(this));
+        } else {
+          return this.app.loadEntities(this.entityName, this._getOptions(), fetchOptions);
+        }
       },
 
       _getOptions: function () {
@@ -150,12 +157,6 @@ The `cuba-entities` element provides an ability to load list of entities.
         if (this.limit) opts.limit = this.limit;
         if (this.offset) opts.offset = this.offset;
         return opts;
-      },
-
-      _countOptionsChanged: function() {
-        if (this.auto && this.provideCount) {
-          this.loadCount();
-        }
       }
     });
   </script>

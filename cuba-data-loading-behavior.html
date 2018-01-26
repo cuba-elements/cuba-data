@@ -52,11 +52,12 @@
      * Loads data.
      * Returns Promise.
      */
-    load: function() {
+    load: function(abortable) {
       return new Promise(function(resolve, reject) {
         this.debounce('loading', function() {
           this._setLoading(true);
-          this.loadRequest = this._load();
+          var fetchOptions = this._handleAbortable(abortable);
+          this.loadRequest = this._load(fetchOptions);
           if (!this.loadRequest) {
             return;
           }
@@ -78,16 +79,29 @@
 
     _optionsChanged: function() {
       if (this.auto) {
-        this.load();
+        this.load(true);
       }
     },
 
+    _handleAbortable: function (abortable) {
+      var options = {};
+      if ('AbortController' in window) {
+        if (this.controller) {
+          this.controller.abort();
+        }
+
+        if (abortable) {
+          this.controller = new AbortController();
+          options.signal = this.controller.signal;
+        }
+      }
+      return options;
+    },
     /**
      * This method has to be overridden to contain real loading logic.
      */
     _load: function() {
       throw new Error('Missing data loading implementation')
     }
-
   }
 </script>
