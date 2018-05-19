@@ -12,6 +12,18 @@
   CubaDataLoadingBehavior = {
 
     /**
+     * Fired when data loading started.
+     *
+     * @event cuba-data-loading-start
+     */
+
+    /**
+     * Fired when data loading finished.
+     *
+     * @event cuba-data-loading-finish
+     */
+
+    /**
      * Fired when data loading failed.
      *
      * @event cuba-data-loading-error
@@ -67,8 +79,8 @@
           this.loadRequest.then(
             function(data) {
               this._setLoading(false);
-              this.fire("cuba-data-loading-finish");
               this._setData(data);
+              this.fire("cuba-data-loading-finish");
               resolve(data);
             }.bind(this),
             function(error) {
