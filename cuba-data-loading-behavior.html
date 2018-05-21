@@ -67,15 +67,13 @@
     load: function(abortable) {
       return new Promise(function(resolve, reject) {
         this.debounce('loading', function() {
-          this._setLoading(true);
-          this.fire("cuba-data-loading-start");
           var fetchOptions = this._handleAbortable(abortable);
           this.loadRequest = this._load(fetchOptions);
           if (!this.loadRequest) {
-            this._setLoading(false);
-            this.fire("cuba-data-loading-finish");
             return;
           }
+          this._setLoading(true);
+          this.fire("cuba-data-loading-start");
           this.loadRequest.then(
             function(data) {
               this._setLoading(false);
