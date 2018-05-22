@@ -12,6 +12,18 @@
   CubaDataLoadingBehavior = {
 
     /**
+     * Fired when data loading started.
+     *
+     * @event cuba-data-loading-start
+     */
+
+    /**
+     * Fired when data loading finished.
+     *
+     * @event cuba-data-loading-finish
+     */
+
+    /**
      * Fired when data loading failed.
      *
      * @event cuba-data-loading-error
@@ -55,16 +67,18 @@
     load: function(abortable) {
       return new Promise(function(resolve, reject) {
         this.debounce('loading', function() {
-          this._setLoading(true);
           var fetchOptions = this._handleAbortable(abortable);
           this.loadRequest = this._load(fetchOptions);
           if (!this.loadRequest) {
             return;
           }
+          this._setLoading(true);
+          this.fire("cuba-data-loading-start");
           this.loadRequest.then(
             function(data) {
               this._setLoading(false);
               this._setData(data);
+              this.fire("cuba-data-loading-finish");
               resolve(data);
             }.bind(this),
             function(error) {
